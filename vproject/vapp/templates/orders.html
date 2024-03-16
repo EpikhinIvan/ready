@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Order List{% endblock %}
+{% block content %}
+{% load static %}
+
+<main>
+    <div class="maindivfirst">
+        <div class="maindivfirstclass">
+            <h1>Order</h1>
+            <div class="dot"></div>
+            <h2>List</h2>
+        </div>
+        {% for order in orders %}
+        <div>
+            <h2>Заказ №{{ order.id }}</h2>
+            <p><strong>Пользователь:</strong> {{ order.user.username }}</p>
+            <p><strong>Содержимое заказа:</strong> {{ order.items }}</p>
+            <p><strong>Общая сумма:</strong> {{ order.total_price }} руб.</p>
+            <p><strong>Сектор:</strong> {{ order.sector }}, <strong>Ряд:</strong> {{ order.row }}, <strong>Место:</strong> {{ order.seat }}</p>
+        </div>
+    {% endfor %}
+
+        <div class="maindivsecondclass">
+            <button class="copycsv" onclick="exportCSV()">
+                <span class="nav-icon"><i class="fa-regular fa-file fa-xl"></i></span>
+                <p>EXPORT CSV</p>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-back">
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">ID</th>
+                    <th style="width: 25%;">Date</th>
+                    <th style="width: 15%;">Status</th>
+                    <th style="width: 25%;">Product</th>
+                    <th style="width: 10%;">Cost</th>
+                    <th style="width: 12%;">Courier</th>
+                    <th style="width: 3%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    $(document).ready(function () {
+        function updateOrdersData() {
+            $.ajax({
+                url: '{% url "get_orders_data" %}',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    $('#ordersTable tbody').empty();
+// доработать эту страницу
+                    response.data.forEach(function (order) {
+                        $('#ordersTable tbody').append(`
+                            <tr>
+                                <td style="width: 10%;">#${order.id}</td>
+                                <td style="width: 25%;">${order.created_at}</td>
+                                <td style="width: 15%;">${order.status}</td>
+                                <td style="width: 25%;">${order.products}</td>
+                                <td style="width: 10%;">${order.cost}</td>
+                                <td style="width: 12%;">${order.courier}</td>
+                        
+                                <td style="width: 3%;">
+                                    <a href="{% url 'order_details' %}">
+                                        <i class="fa-solid fa-ellipsis-vertical fa-xl" style="color: #000000;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.log('Error:', error); 
+                }
+            });
+        }
+
+        updateOrdersData();
+
+        setInterval(updateOrdersData, 3000);
+    });
+
+
+    function exportCSV() {
+        window.location.href = '{% url "export-csv" %}';
+    }
+
+</script>
+
+{% endblock %}

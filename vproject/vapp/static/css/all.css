@@ -1,0 +1,356 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Public Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    background:#F9F9F9;
+    
+}
+
+/* хедер */
+header {
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    padding: 0 40px; 
+    position: fixed;
+    z-index: 100 ;
+    top: 0;
+    left: 0;
+    right: 0;
+    
+}
+
+.icon-quit{
+    cursor: pointer;
+}
+
+/* навбар */
+.proced-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #3f4d67;
+    width: 240px;
+    overflow-y: auto;
+    z-index: 101;
+    box-shadow: 1px 0 20px 0 rgb(63, 77, 103);
+}
+
+.navbar-content {
+    display: flex;
+    flex-direction: column; 
+    height: 100%;
+}
+
+.navbar-caption {
+    padding: 0 20px 5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: #a4b3cc;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #a4b3cc;
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    font-size: 17px;
+    transition: background-color 0.3s; 
+}
+
+.nav-link:hover {
+    background-color: #4b5b7e; 
+}
+
+.inner-navbar {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    width: 100%; 
+}
+
+.label {
+    color: #a4b3cc;
+}
+
+.navbar-logo {
+    width: 100px;
+    height: 45px;
+    font-size: 30px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+
+}
+
+.nav-icon {
+    margin-right: 10px; 
+}
+
+.nav-arrow {
+    margin-left: auto; 
+    margin-right: 10px; 
+}
+
+
+
+
+/* модальное окно выхода */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    text-align: center;
+    border-radius: 15px;
+
+  }
+  
+  #confirmBtn,
+  #cancelBtn {
+    color: black;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #4CAF50;
+    cursor: pointer;
+    border-radius: 15px;
+    background-color: white;
+  }
+  
+  #cancelBtn {
+    border: 1px solid #f44336;
+  }
+
+
+/* главная */
+
+main{
+    margin-left: 280px;
+    margin-top: 70px;
+    width: 76%;
+    margin-bottom: 40px;
+
+}
+.main-back{
+    border: 1px solid #D8D8D8;
+    background-color: white;
+    border-radius: 15px;
+    
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th, td {
+    border-bottom: 1px solid #D8D8D8;
+    padding: 10px;
+    text-align: left;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+th {
+    font-size: 15px;
+    
+    color: #6E7D8A;
+}
+.maindivfirst {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.maindivfirstclass {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.maindivfirstclass h1,
+.maindivfirstclass h2 {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    margin: 0;
+}
+
+.maindivfirstclass h2 {
+    color: #6E7D8A;
+}
+
+.maindivfirstclass .dot {
+    width: 6px;
+    height: 6px;
+    background-color: #000000;
+    border-radius: 50%;
+}
+.maindivsecondclass {
+    margin-left: auto;  
+}
+.copycsv {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px; 
+    background: #F9F9F9; 
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #090040;
+    border-radius: 10px;
+    
+}
+
+.copycsv img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+    transition: filter 0.3s ease-in-out; 
+}
+
+.copycsv p{
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+}
+.copycsv:hover {
+    background: black; 
+    color: white;
+
+}
+
+
+
+.create-form{
+    border: 1px solid #D8D8D8;
+    background-color: white;
+    border-radius: 15px;
+
+    padding: 20px;
+    width: 50%;
+    margin-top: 20px;
+    margin-left: 400px;
+}
+
+.product-form {
+    display: grid;
+    grid-gap: 10px;
+}
+
+
+.form-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid #D8D8D8;
+    margin-bottom: 20px;
+}
+
+
+.submit{
+    background-color: #090040;
+    color: white;
+    width: 296px;
+    border-radius: 10px;
+    border: none;
+    height: 35px;
+    margin-top: 20px;
+}
+
+.content-create{
+    display: flex;
+}
+
+
+
+
+/* настройки */
+
+.settings-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.time-set,
+.stop-bot,
+.helper-bot {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+}
+
+h2 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+
+
+
+.submit1{
+    background-color: #090040;
+    color: white;
+    width: 296px;
+    border-radius: 10px;
+    border: none;
+    height: 35px;
+    margin-top: 20px;
+    
+}
+
+.submit1:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}

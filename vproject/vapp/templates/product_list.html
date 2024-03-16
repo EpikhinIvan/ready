@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+{% load static %}
+<main>
+    <div class="maindivfirst">
+        <div class="maindivfirstclass">
+            <h1>Product</h1>
+            <div class="dot"></div>
+            <h2>List</h2>
+        </div>
+
+        <div class="maindivsecondclass">
+            <a href="{% url 'product_create' %}">
+                <button class="copycsv">
+                    <span class="nav-icon"><i class="fa-solid fa-plus fa-xl"></i></span>
+                    <p>ADD PRODUCT</p>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-back">
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th style="width: 57%;">Product</th>
+                    <th style="width: 20%;">Stock</th>
+                    <th style="width: 20%;">Price</th>
+                    <th style="width: 3%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</main>
+<script>
+    $(document).ready(function () {
+    function updateProductsData() {
+        $.ajax({
+            url: '{% url "get_products_data" %}',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                $('#ordersTable tbody').empty();
+
+                response.data.forEach(function (product) {
+                    $('#ordersTable tbody').append(`
+                        <tr>
+                            <td style="width: 57%;">${product.name}</td>
+                            <td style="width: 20%;">${product.quantity}</td>
+                            <td style="width: 20%;">${product.price}</td>
+                            <td style="width: 3%;">
+                                <i class="fa-solid fa-ellipsis-vertical fa-xl" style="color: #000000;"></i>
+                            </td>
+                        </tr>
+                    `);
+                });
+            },
+            error: function (error) {
+                console.log('Error:', error); 
+            }
+        });
+    }
+
+    updateProductsData();
+
+    setInterval(updateProductsData, 3000);
+});
+
+
+</script>
+{% endblock %}

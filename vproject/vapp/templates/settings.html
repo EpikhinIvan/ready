@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<main class="settings-container">
+    <div class="time-set">
+        <h2>Time Setting</h2>
+        <!-- Форма для установки времени работы матча -->
+        <form method="post" action="{% url 'set_match_time' %}" class="time-form">
+            {% csrf_token %}
+            <label for="start_time">Match Start Time:</label>
+            <input type="time" id="start_time" name="start_time" required>
+
+            <label for="end_time">Match End Time:</label>
+            <input type="time" id="end_time" name="end_time" required>
+            <button type="submit"  class="submit1">Set Match Time</button>
+        </form>
+    </div>
+    
+
+    <div class="stop-bot">
+        <h2>Stop The Bot</h2>
+        <!-- Кнопка для остановки бота -->
+        <form method="post" action="{% url 'stop_bot' %}" class="stop-bot-form">
+            {% csrf_token %}
+            <button type="submit" class="submit1">Stop Bot</button>
+        </form>
+    </div>
+
+    <div class="helper-bot">
+        <h2>Installing The Helper</h2>
+        <!-- Форма для установки Helper -->
+        <form method="post" action="{% url 'set_helper' %}" class="helper-form">
+            {% csrf_token %}
+            <label for="telegram_username">Helper Telegram Username:</label>
+            <input type="text" id="telegram_username" name="telegram_username" required>
+            <button type="submit"  class="submit1">Set Helper</button>
+        </form>
+    </div>
+    
+
+   
+
+    
+</main>
+
+{% endblock %}

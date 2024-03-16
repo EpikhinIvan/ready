@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Product Create{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<main>
+    <div class="maindivfirstclass">
+        <h1>Product</h1>
+        <div class="dot"></div>
+        <h2>Create</h2>
+    </div>
+    <div class="content-create">
+        <div>
+            <h2>Details</h2>
+        </div>
+
+        <div class="create-form">
+            <form method="post" enctype="multipart/form-data" class="product-form">
+                {% csrf_token %}
+                <input type="text" id="name" name="name" class="form-input" required placeholder="Name">
+            
+                <input type="number" id="price" name="price" class="form-input" required placeholder="Price">
+            
+                <input type="number" id="quantity" name="quantity" class="form-input" required placeholder="Quantity">
+            
+                <input type="text" id="category" name="category" class="form-input" required placeholder="Category">
+            
+                <button type="submit" class="submit">Create Product</button>
+            </form>
+        </div>
+    </div>
+
+   
+    
+</main>
+
+{% endblock %}
