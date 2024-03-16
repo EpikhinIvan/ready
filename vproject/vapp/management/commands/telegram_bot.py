@@ -13,13 +13,12 @@ def ensure_user_data_initialized(user_id):
         user_data[user_id] = {
             'order': {
                 'items': [],
-                'total_price': Decimal('0.0'),
+                'total_price': Decimal('0.00'),
                 'sector': None,
                 'row': None,
                 'seat': None
             }
         }
-#START
 @bot.message_handler(commands=['start'])
 def start_order(message):
     user_id = message.chat.id
@@ -100,15 +99,23 @@ def show_order_and_next_steps(user_id):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'choose_sector')
 def select_sector(call):
-    print("Выбор сектора запущен")  # Для отладки
+    user_id = call.from_user.id
+    order = user_data[user_id]['order']
 
-    user_id = call.from_user.id  # Правильно извлекаем user_id из call
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    sectors = ["Ложа D", "Vip Ложа", "PremiumVip", "Семейная Ложа", "Стандартный сектор"]
-    for sector in sectors:
-        markup.add(types.InlineKeyboardButton(sector, callback_data=f"sector_{sector}"))
-    bot.send_message(user_id, "Выберите сектор:", reply_markup=markup)
+    total_price = sum(item['price'] * item['quantity'] for item in order['items'])
 
+    if total_price >= Decimal('1500.00'):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        sectors = ["Ложа D", "Vip Ложа", "PremiumVip", "Семейная Ложа", "Стандартный сектор"]
+        for sector in sectors:
+            markup.add(types.InlineKeyboardButton(sector, callback_data=f"sector_{sector}"))
+        bot.send_message(user_id, "Выберите сектор:", reply_markup=markup)
+    else:
+        bot.send_message(user_id, "Минимальная сумма заказа должна быть 1500 руб. Пожалуйста, добавьте больше продуктов.")
+        show_categories(user_id)  # Повторное предложение выбора категории товаров
+
+
+        
 @bot.callback_query_handler(func=lambda call: call.data == 'cancel')
 def cancel(call):
     user_id = call.from_user.id
