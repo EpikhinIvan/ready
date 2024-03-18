@@ -9,7 +9,49 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from .models import Helper
 from .models import Order
+from .models import BotStatus
+from .forms import MessageForm
+from .models import Chat
+import telebot
+from .forms import BotStatusForm
 
+
+
+
+## ЭТО ДЛЯ ОТПРАВКИ СООБЩЕНИЯ ЧЕРЕЗ САЙТ, ЧТОБЫ ЧТОТО КОМУТО ОТПРАВИЛ НУЖНО ЧТОБЫ ЧЕЛ НА СТАРТ НАЖАЛ
+TOKEN = '7171828502:AAHfKBNkG1zTgNtf79YCViNBCOKECvgGqTM'
+bot = telebot.TeleBot(TOKEN)
+
+def send_message_to_all(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.cleaned_data['message']
+            chats = Chat.objects.all()
+            for chat in chats:
+                try:
+                    bot.send_message(chat.chat_id, message)
+                except Exception as e:
+                    print(f"Ошибка при отправке сообщения: {e}")
+            return redirect('message')  # Перенаправление после отправки ПРИДУМАЙ ЧТОНИБУДЬ ЗДЕСЬ, НАВЕРНОЕ ДРУГУЮ ССЫЛКУ НА РЕДИРЕКТ ВСТАВИТЬ НУЖНО БУДЕТ
+    else:
+        form = MessageForm()
+
+    return render(request, 'message.html', {'form': form})
+
+##Включить или выключить бота
+def change_bot_status(request):
+    if request.method == "POST":
+        form = BotStatusForm(request.POST)
+        if form.is_valid():
+            is_active = form.cleaned_data['is_active']
+            BotStatus.objects.update_or_create(id=1, defaults={'is_active': is_active})
+            return redirect('change_bot_status')  # Перенаправление на главную страницу или куда вы хотите
+    else:
+        status, _ = BotStatus.objects.get_or_create(id=1)
+        form = BotStatusForm(initial={'is_active': status.is_active})
+
+    return render(request, 'change_bot_status.html', {'form': form})
 def log_in(request):
     error_message = None
 

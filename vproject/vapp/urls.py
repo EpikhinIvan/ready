@@ -25,6 +25,10 @@ urlpatterns = [
     path('set_helper/', views.set_helper, name='set_helper'),
     path('stop_bot/', views.stop_bot, name='stop_bot'),
     path('set_match_time/', views.set_match_time, name='set_match_time'),
+    path('message/', views.send_message_to_all, name='message'),
+    path('change_bot_status/', views.change_bot_status, name='change_bot_status'),
+
+
 
   
     

@@ -24,7 +24,7 @@ class Courier(models.Model):
 
 class Order(models.Model):
     items = models.TextField()  # Простое текстовое поле для хранения списка товаров
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     sector = models.CharField(max_length=100)
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -32,16 +32,18 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
+#ГЫГЫЫГ
+class Chat(models.Model):
+    chat_id = models.CharField(max_length=255, unique=True)
 
-    def update_total_price(self):
-        order_items = self.orderitem_set.all()
-        self.total_price = sum(item.price * item.quantity for item in order_items)
-        self.save()
+    def __str__(self):
+        return str(self.chat_id)
+##ДЛЯ ВЕЛЮЧЕНИЯ И ВЫКЛЮЧЕНИЯ    
+class BotStatus(models.Model):
+    is_active = models.BooleanField(default=True)
 
-@receiver(post_save, sender=Order)
-def update_order_total_price(sender, instance, created, **kwargs):
-    if created:
-        instance.update_total_price()
+    def __str__(self):
+        return "Активен" if self.is_active else "Не активен"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
