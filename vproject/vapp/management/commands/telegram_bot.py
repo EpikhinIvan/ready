@@ -15,6 +15,8 @@ from telebot.types import Message, CallbackQuery
 ##СЮДА СВОЙ АЙПИ МОЖЕШЬ ДОБАВИТЬ НА ВСЯКИЙ
 ADMIN_TELEGRAM_ID = 865127428
 bot = TeleBot('7171828502:AAHfKBNkG1zTgNtf79YCViNBCOKECvgGqTM')
+PAYMENTS_PROVIDER_TOKEN = '5420394252:TEST:543267'
+
 
 ##ПРОВЕРЯЕТ СТАТУС БОТА ПРИ КАААЖДДМОМ ДЕЙСТВИИ
 def check_bot_status(func):
@@ -227,9 +229,72 @@ def process_seat_input(message):
         bot.register_next_step_handler(msg, process_seat_input)
         return
     user_data[user_id]['order']['seat'] = seat
-    confirm_order(user_id)
+    show_order_summary(user_id)
 
-def confirm_order(user_id):
+@bot.callback_query_handler(func=lambda call: call.data == 'show_order_summary')
+@check_bot_status
+
+def show_order_summary(user_id):
+    order_details = user_data[user_id]['order']
+    summary_lines = []
+    total_price = sum(Decimal(str(item['price'])) * item['quantity'] for item in order_details['items'])
+
+    for item in order_details['items']:
+        summary_lines.append(f"{item['name']} x {item['quantity']}: {item['price'] * item['quantity']} руб.")
+
+    summary = "\n".join(summary_lines)
+    message_text = f"Ваш заказ:\n{summary}\nОбщая сумма: {total_price.quantize(Decimal('1.00'))} руб.\n\nПодтвердите ваш заказ."
+
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    confirm_button = types.InlineKeyboardButton("Подтвердить заказ", callback_data='pay') ##ЗДЕСЬ
+    cancel_button = types.InlineKeyboardButton("Отменить", callback_data='cancel')
+    markup.add(confirm_button, cancel_button)
+
+    bot.send_message(user_id, message_text, reply_markup=markup)
+
+##ЗДЕСЬ
+@bot.callback_query_handler(func=lambda call: call.data == 'pay')
+def initiate_payment(call):
+    user_id = call.from_user.id  # Получаем ID пользователя из колбэка
+    total_price = user_data[user_id]['order']['total_price']  # Получаем общую сумму заказа
+
+    # Переводим общую сумму заказа в копейки и создаем объект цены
+    prices = [types.LabeledPrice(label="Общая сумма заказа", amount=int(total_price * 100))]
+
+    # Отправляем инвойс (счет на оплату)
+    bot.send_invoice(
+    chat_id=call.from_user.id,
+    title="Оплата заказа",
+    description="Оплата за ваш заказ",
+    provider_token=PAYMENTS_PROVIDER_TOKEN,
+    currency='KZT',
+    prices=prices,
+    start_parameter="create_invoice",
+    invoice_payload="Unique_Payment_Identifier"  # Уникальный идентификатор платежа
+)
+
+# Обработчик успешной оплаты
+@bot.message_handler(content_types=['successful_payment'])
+def handle_payment(message):
+    user_id = message.chat.id
+    # После успешной оплаты, можно обновить статус заказа, активировать подписку или предоставить доступ к услугам
+    bot.send_message(chat_id=user_id, text="Спасибо за вашу оплату! Ваш заказ будет обработан.")
+
+# Не забудьте обработать pre_checkout_query, чтобы подтвердить оплату
+@bot.pre_checkout_query_handler(func=lambda query: True)
+def checkout(pre_checkout_query):
+    bot.answer_pre_checkout_query(pre_checkout_query_id=pre_checkout_query.id, ok=True, 
+                                  error_message="Oops, что-то пошло не так... Пожалуйста, попробуйте еще раз позже.")
+
+
+#ДОСЮДА
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'confirm_order')
+def confirm_order(call):
+    bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+
+    user_id = call.from_user.id  # Получаем user_id из колбэка
 
     order_details = user_data[user_id]['order']
     summary_lines = []
@@ -270,8 +335,12 @@ def confirm_order(user_id):
 
 #Отправка сообщений пользователям, там указан только мой телеграм id, можно добавить свой в самом начале,
          # /broadcast (сообщение) НУ ВООБЩЕ УДАЛИТЬ МОЖНО ЭТУ ФУНКЦИЮ
-@bot.message_handler(commands=['broadcast'])
 
+
+
+
+
+@bot.message_handler(commands=['broadcast'])
 def send_broadcast_message(message):
     if message.from_user.id == ADMIN_TELEGRAM_ID:
         command, *text = message.text.split(maxsplit=1)
