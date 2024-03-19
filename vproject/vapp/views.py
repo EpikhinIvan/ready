@@ -14,6 +14,7 @@ from .forms import MessageForm
 from .models import Chat
 import telebot
 from .forms import BotStatusForm
+from .models import BotUser
 
 
 
@@ -121,9 +122,9 @@ def export_orders_csv(request):
 
     return response
 
-
- 
-
+def user_list(request):
+    users = Chat.objects.all()
+    return render(request, 'user_list.html', {'users': users})
 
 @login_required(login_url='log_in')
 def product_list(request):

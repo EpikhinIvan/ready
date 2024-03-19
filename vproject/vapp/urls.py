@@ -1,6 +1,7 @@
 from django.urls import path
 from vapp import views
 from django.contrib.auth import views as auth_views
+from .views import user_list
 
 urlpatterns = [
 
@@ -27,6 +28,7 @@ urlpatterns = [
     path('set_match_time/', views.set_match_time, name='set_match_time'),
     path('message/', views.send_message_to_all, name='message'),
     path('change_bot_status/', views.change_bot_status, name='change_bot_status'),
+    path('users/', user_list, name='user_list'),
 
 
 

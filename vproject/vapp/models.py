@@ -35,9 +35,11 @@ class Order(models.Model):
 #ГЫГЫЫГ
 class Chat(models.Model):
     chat_id = models.CharField(max_length=255, unique=True)
+    username = models.CharField(max_length=255, null=True, blank=True)  # Тег пользователя
+    first_name = models.CharField(max_length=255, null=True, blank=True)  # Имя пользователя
 
     def __str__(self):
-        return str(self.chat_id)
+        return f"@{self.username}" if self.username else str(self.chat_id)
 ##ДЛЯ ВЕЛЮЧЕНИЯ И ВЫКЛЮЧЕНИЯ    
 class BotStatus(models.Model):
     is_active = models.BooleanField(default=True)
@@ -69,3 +71,14 @@ class SiteStatistics(models.Model):
 class TimeSlot(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+
+
+class BotUser(models.Model):
+    user_id = models.CharField(max_length=255, unique=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
+    username = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"@{self.username}" if self.username else self.first_name

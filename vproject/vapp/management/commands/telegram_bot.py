@@ -49,6 +49,14 @@ def ensure_user_data_initialized(user_id):
 def start_order(message):
     chat_id = message.chat.id
     Chat.objects.get_or_create(chat_id=str(chat_id))
+    chat_id = message.chat.id
+    username = message.from_user.username
+    first_name = message.from_user.first_name
+    user_id = message.chat.id
+
+    # Создание или обновление записи в модели Chat
+    Chat.objects.update_or_create(chat_id=str(chat_id), defaults={'username': username, 'first_name': first_name})
+
 
     user_id = message.chat.id
 
