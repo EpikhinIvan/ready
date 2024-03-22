@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Edit Product{% endblock %}
+{% load static %}
+{% block content %}
+<main>
+    <div class="wrapper-main">
+
+        <div class="maindivfirstclass">
+            <h1>Product</h1>
+            <div class="dot"></div>
+            <h2>Edit</h2>
+        </div>
+
+        <div class="content-create">
+            <div>
+                <h2>Details</h2>
+            </div>
+            <div class="create-form">
+                <form method="post" enctype="multipart/form-data" class="product-form">
+                    {% csrf_token %}
+                    {{ form.name }}
+                    {{ form.quantity }}
+                    {{ form.price }}
+                    {{ form.category }}
+                
+                    <button type="submit" class="submit">Save Changes</button>
+                    
+                </form>
+            </div>
+
+        </div>
+
+        
+    <div class="wrapper-main">
+</main>
+{% endblock %}

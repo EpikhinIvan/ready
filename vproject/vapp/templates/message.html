@@ -1,7 +1,20 @@
-ЭТО ДЛЯ ОТПРАВКИ СООБЩЕНИЯ ЧЕРЕЗ САЙТ
-МОЖЕТ УБРАТЬ ЭТУ СТРАНИЦУ И ДОБАВИТЬ КУДАТО В ДРУГОЕ МЕСТО, ИЛИ СТИЛИЗОВАТЬ, ЕСЛИ БУДЕШЬ ЕË УДАЛЯТЬ, ПОМЕНЯЙ urls и  views
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Отправить</button>
-</form>
+{% extends 'base.html' %}
+{% block title %}Rassylka{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<main class="settings-container">
+    <div class="wrapper-main">
+        <div class="helper-bot">
+            <h1>sosat' negr</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="submit1">Отправить</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

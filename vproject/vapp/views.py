@@ -1,20 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
-from .models import Product
-from .models import Order
+from .models import Product, BotStatus, Order, Chat, BotUser, Helper
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import csv
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from .models import Helper
-from .models import Order
-from .models import BotStatus
-from .forms import MessageForm
-from .models import Chat
+from .forms import MessageForm, BotStatusForm, ProductForm
 import telebot
-from .forms import BotStatusForm
-from .models import BotUser
 
 
 
@@ -23,6 +16,7 @@ from .models import BotUser
 TOKEN = '7171828502:AAHfKBNkG1zTgNtf79YCViNBCOKECvgGqTM'
 bot = telebot.TeleBot(TOKEN)
 
+@login_required(login_url='log_in')
 def send_message_to_all(request):
     if request.method == 'POST':
         form = MessageForm(request.POST)
@@ -41,6 +35,7 @@ def send_message_to_all(request):
     return render(request, 'message.html', {'form': form})
 
 ##Включить или выключить бота
+@login_required(login_url='log_in')
 def change_bot_status(request):
     if request.method == "POST":
         form = BotStatusForm(request.POST)
@@ -53,6 +48,7 @@ def change_bot_status(request):
         form = BotStatusForm(initial={'is_active': status.is_active})
 
     return render(request, 'change_bot_status.html', {'form': form})
+
 def log_in(request):
     error_message = None
 
@@ -69,18 +65,19 @@ def log_in(request):
 
     return render(request, 'login.html', {'error_message': error_message})
 
+
 @login_required(login_url='log_in')
 def get_orders_data(request):
     orders = Order.objects.all()
     data = []
     for order in orders:
         data.append({
-            'id': order.id,
+            'items' : order.items,
             'created_at': order.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            'status': order.get_status_display(),
-            'products': ', '.join([item.product.name for item in order.orderitem_set.all()]),
-            'cost': sum([item.price for item in order.orderitem_set.all()]),
-            'courier': order.courier.user.username,
+            'sector': order.sector,
+            'row' : order.row,
+            'seat' : order.seat,
+            'total_price': order.total_price
         })
 
     return JsonResponse({'data': data})
@@ -130,7 +127,23 @@ def user_list(request):
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'product_list.html', {'products': products})
-    
+
+
+@login_required(login_url='log_in')
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')  
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'product_edit.html', {'form': form, 'product': product})
+
+
 
 @login_required(login_url='log_in')
 def get_products_data(request):
@@ -138,9 +151,11 @@ def get_products_data(request):
     data = []
     for product in products:
         data.append({
+            'id': product.id,
             'name': product.name,
             'quantity': product.quantity,
             'price': product.price,
+            'initial_quantity': product.initial_quantity
         })
 
     return JsonResponse({'data': data})
@@ -170,7 +185,12 @@ def product_create(request):
         quantity = request.POST.get('quantity')
         category = request.POST.get('category')
 
-        Product.objects.create(name=name, price=price, quantity=quantity, category=category)
+        # Создаем экземпляр продукта
+        new_product = Product.objects.create(name=name, price=price, quantity=quantity, category=category)
+        
+        # Устанавливаем initial_quantity равным quantity
+        new_product.initial_quantity = new_product.quantity
+        new_product.save()
 
         return redirect('product_list')  
 
@@ -198,21 +218,3 @@ def set_helper(request):
 
     return HttpResponse("Helper set successfully!")
 
-
-@login_required(login_url='log_in')
-def stop_bot(request):
-    # Обработка остановки бота
-    if request.method == 'POST':
-        pass
-
-    return HttpResponse("Bot stopped successfully!")
-
-@login_required(login_url='log_in')
-def set_match_time(request):
-    # Обработка установки времени работы матча
-    if request.method == 'POST':
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
-        # Ваш код обработки
-
-    return HttpResponse("Match time set successfully!")

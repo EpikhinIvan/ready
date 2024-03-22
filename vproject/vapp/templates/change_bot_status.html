@@ -1,7 +1,23 @@
-ТАКАЯЖЕ ХУЙНЯ КАК s messagehtml, ПОСМОТРИ ЧТО МОЖНО СДЕЛАТЬ
+<!-- ТАКАЯЖЕ ХУЙНЯ КАК s messagehtml, ПОСМОТРИ ЧТО МОЖНО СДЕЛАТЬ -->
+{% extends 'base.html' %}
+{% block title %}change bot status{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Сохранить</button>
-</form>
+{% block content %}
+{% load static %}
+<main class="settings-container">
+    <div class="wrapper-main">
+
+        <div class="time-set">
+            <h2>Change bot status</h2>
+            <!-- Форма для установки Helper -->
+            <form method="post"  action="{% url 'change_bot_status' %}" class="helper-form">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="submit1">Сохранить</button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}

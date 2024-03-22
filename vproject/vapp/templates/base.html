@@ -1,7 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a267741843.js" crossorigin="anonymous"></script>
-    
+    <script async src="https://kit.fontawesome.com/a267741843.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
 
     <title>{% block title %}My Website{% endblock %}</title>
@@ -19,21 +20,22 @@
     <!-- модальное окно выхода -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-          <p>Вы уверены, что хотите выйти?</p>
-          <button id="confirmBtn">Выход</button>
-          <button id="cancelBtn">Отмена</button>
+            <h2>Log Out</h2>
+            <p>Are you sure you want to log out?</p>
+            <button id="confirmBtn">Log Out</button>
+            <button id="cancelBtn">Cancel</button>
         </div>
     </div>
 
     <!-- хедер -->
     <header>
         <div class="name-exit">
-          <span class="icon-quit" onclick="showConfirmModal()"><i class="fa-solid fa-arrow-right-from-bracket fa-lg" style="color: #f44136;"></i></span>
+          <span class="icon-quit" onclick="showConfirmModal()">Log Out<i class="fa-solid fa-arrow-right-from-bracket" style="color: #f44136;"></i></span>
           <form id="logout-form" method="post" action="{% url 'logout' %}">
             {% csrf_token %}
           </form>
         </div>
-      </header>
+    </header>
 
     <!-- боковой блок -->
     <nav class="proced-navbar">
@@ -50,39 +52,40 @@
                         <label>Navigation</label>
                     </li>
 
-                    <!-- <li class="navbar-item">
-                        <a href="{% url 'order-list' %}" class="nav-link">
-                            <span class="nav-icon"><i class="fa-solid fa-house fa-sm"></i></span>
-                            <span class="nav-text">Analytics</span>
-                            <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
-                        </a>
-                    </li> -->
-
                     <li class="navbar-item">
                         <a href="{% url 'order-list' %}" class="nav-link">
                             <span class="nav-icon"><i class="fa-solid fa-cart-shopping fa-sm"></i></span>
                             <span class="nav-text">Order</span>
                             <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
-
                         </a>
                     </li>
                     
                     <li class="navbar-item">
                         <a href="{% url 'product_list' %}" class="nav-link">
-                            <span class="nav-icon"><i class="fa-solid fa-burger fa-sm"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-burger fa-sm"></i></span>  
                             <span class="nav-text">Product</span>
                             <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
-
                         </a>
                     </li>
 
                     <li class="navbar-item">
-                        <a href="{% url 'settings' %}" class="nav-link">
+                        <a class="nav-link" onclick="showOpenMenu()">
                             <span class="nav-icon"><i class="fa-solid fa-gear fa-sm"></i></span>
                             <span class="nav-text">Settings</span>
                             <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
-
                         </a>
+                        <ul id="openMenu">
+                            <li class="navbar-item-el">
+                                <a class="nav-link" href="{% url 'settings' %}">Bot Settings</a>
+                            </li>
+                            <li class="navbar-item-el">
+                                <a class="nav-link" href="{% url 'message' %}">Rassylka</a>
+                            </li>
+                            <li class="navbar-item-el">
+                                <a class="nav-link" href="{% url 'change_bot_status' %}">Rassylka</a>
+                            </li>
+                           
+                        </ul>
                     </li>
 
                 </ul>
@@ -98,26 +101,51 @@
     <script>
         const showConfirmModal = () =>{
             var modal = document.getElementById("confirmModal");
-        modal.style.display = "block";
+            modal.style.display = "block";
 
-        // Обработчик кнопки "Выход"
-        document.getElementById("confirmBtn").onclick = function () {
-            document.getElementById("logout-form").submit();
-        };
+            // Обработчик кнопки "Выход"
+            document.getElementById("confirmBtn").onclick = function () {
+                document.getElementById("logout-form").submit();
+            };
 
-        // Обработчик кнопки "Отмена"
-        document.getElementById("cancelBtn").onclick = function () {
-            modal.style.display = "none";
-        };
+            // Обработчик кнопки "Отмена"
+            document.getElementById("cancelBtn").onclick = function () {
+                modal.style.display = "none";
+            };
         }
 
         // Закрытие модального окна при клике вне его
         window.onclick = function (event) {
-        var modal = document.getElementById("confirmModal");
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+            var modal = document.getElementById("confirmModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
         };
+
+        function showOpenMenu(){
+            const openMenu = document.getElementById('openMenu');
+            if(openMenu.style.display == 'block'){
+                openMenu.style.display = 'none';
+                // Сохраняем состояние меню в localStorage
+                localStorage.setItem('menuState', 'closed');
+            } else {
+                openMenu.style.display = 'block';
+                // Сохраняем состояние меню в localStorage
+                localStorage.setItem('menuState', 'open');
+            }
+        }
+
+        $(document).ready(function() {
+            // Проверяем состояние меню при загрузке страницы
+            const menuState = localStorage.getItem('menuState');
+            if(menuState === 'open'){
+                // Если состояние 'open', отображаем меню
+                $('#openMenu').show();
+            } else {
+                // Если состояние 'closed', скрываем меню
+                $('#openMenu').hide();
+            }
+        });
     </script>   
 
 </body>

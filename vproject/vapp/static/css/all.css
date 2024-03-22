@@ -1,13 +1,20 @@
+/* Общее */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+*{
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: 'Public Sans';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    background:#F9F9F9;
-    
+    background:#f4f7fa;
+    overflow: overlay;
 }
 
 /* хедер */
@@ -18,16 +25,15 @@ header {
     justify-content: end;
     align-items: center;
     padding: 0 40px; 
-    position: fixed;
-    z-index: 100 ;
-    top: 0;
-    left: 0;
-    right: 0;
-    
 }
 
 .icon-quit{
     cursor: pointer;
+    color: #f44136;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 /* навбар */
@@ -37,8 +43,7 @@ header {
     left: 0;
     bottom: 0;
     background-color: #3f4d67;
-    width: 240px;
-    overflow-y: auto;
+    width: 19%;
     z-index: 101;
     box-shadow: 1px 0 20px 0 rgb(63, 77, 103);
 }
@@ -62,10 +67,12 @@ header {
     display: flex;
     align-items: center;
     padding: 14px 20px;
-    font-size: 17px;
+    font-size: 14px;
     transition: background-color 0.3s; 
 }
-
+.active{
+    color: red;
+}
 .nav-link:hover {
     background-color: #4b5b7e; 
 }
@@ -124,7 +131,6 @@ header {
     border: 1px solid #888;
     width: 300px;
     text-align: center;
-    border-radius: 15px;
 
   }
   
@@ -147,23 +153,26 @@ header {
 /* главная */
 
 main{
-    margin-left: 280px;
-    margin-top: 70px;
-    width: 76%;
+    margin-left: 20%;
     margin-bottom: 40px;
 
 }
-.main-back{
+
+.wrapper-main{
+    padding: 40px;
+}
+
+.main-back {
     border: 1px solid #D8D8D8;
     background-color: white;
-    border-radius: 15px;
-    
+    overflow: auto;
+    white-space: nowrap;
 }
 
 table {
-    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+
 }
 
 th, td {
@@ -353,4 +362,20 @@ input {
     background-color: white;
     color: black;
     border: 1px solid black;
+}
+
+textarea{
+    width: 100%;
+    overflow:hidden;
+    background-color:#FFF;
+    color:#222;
+    resize:none;
+    border-radius: 4px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+#openMenu{
+    display: none;
 }
