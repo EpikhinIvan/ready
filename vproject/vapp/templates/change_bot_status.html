@@ -1,7 +1,6 @@
-<!-- ТАКАЯЖЕ ХУЙНЯ КАК s messagehtml, ПОСМОТРИ ЧТО МОЖНО СДЕЛАТЬ -->
 {% extends 'base.html' %}
 {% block title %}change bot status{% endblock %}
-
+ 
 {% block content %}
 {% load static %}
 <main class="settings-container">
@@ -9,7 +8,6 @@
 
         <div class="time-set">
             <h2>Change bot status</h2>
-            <!-- Форма для установки Helper -->
             <form method="post"  action="{% url 'change_bot_status' %}" class="helper-form">
                 {% csrf_token %}
                 {{ form }}

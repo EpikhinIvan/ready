@@ -4,22 +4,46 @@
 {% block content %}
 {% load static %}
 
-<main class="settings-container">
     <div class="wrapper-main">
-       
-        <div class="helper-bot">
-            <h2>Installing The Helper</h2>
-            <!-- Форма для установки Helper -->
-            <form method="post" action="{% url 'set_helper' %}" class="helper-form">
-                {% csrf_token %}
-                <label for="telegram_username">Helper Telegram Username:</label>
-                <input type="text" id="telegram_username" name="telegram_username" required>
-                <button type="submit"  class="submit1">Set Helper</button>
-            </form>
+        <div class="page-header">
+            <h2>Настройка бота</h2>
+        </div>
+
+        <div class="main-backc">
+            <div class="helper-bot">
+                <h3>Установка Помощника в Бота</h3>
+                <form method="post" action="{% url 'set_helper' %}" class="helper-form">
+                    {% csrf_token %}
+                    <label for="telegram_username">Введите Telegram Username:</label>
+                    <input type="text" id="telegram_username" name="telegram_username" required>
+                    <button type="submit"  class="submit-login">Изменить</button>
+                </form>
+            </div>
+
+            <div class="helper-bot">
+                <h3>Рассылка сообщений</h3>
+                <form method="post">
+                    {% csrf_token %} 
+                    {{ form.as_p }}
+                    <button type="submit" class="submit-login">Отправить</button>
+                </form>
+            </div>
+
+
+            <div class="helper-bot">
+                <h3>Статус Бота</h3>
+                <form method="post" action="{% url 'change_bot_status' %}" class="helper-form">
+                    {% csrf_token %}
+                    {{ bot_status_form }}
+                    <button type="submit" class="submit-login">Сохранить</button>
+                </form>
+            </div>
+
+            
+
         </div>
         
     </div>
-</main>
 
 
 {% endblock %}

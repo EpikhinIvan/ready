@@ -3,22 +3,16 @@
 
 {% block content %}
 {% load static %}
-<main>
     <div class="wrapper-main">
-        <div class="maindivfirst"> 
-            <div class="maindivfirstclass">
-                <h1>Product</h1>
-                <div class="dot"></div>
-                <h2>List</h2>
-            </div>
 
-            <div class="maindivsecondclass">
-                <a href="{% url 'product_create' %}">
-                    <button class="copycsv">
-                        <span class="nav-icon"><i class="fa-solid fa-plus fa-xl"></i></span>
-                        <p>ADD PRODUCT</p>
-                    </button>
-                </a>
+        <div class="page-header">
+            <h2>Меню</h2>
+            <div class="copy"> 
+                <button class="copycsv">
+                    <a href="{% url 'product_create' %}">
+                        Добавить продукт
+                    </a>
+                </button>
             </div>
         </div>
 
@@ -26,21 +20,21 @@
             <table id="ordersTable">
                 <thead>
                     <tr>
-                        <th style="width: 57%;">Product</th>
-                        <th style="width: 20%;">Stock</th>
-                        <th style="width: 20%;">Price</th>
-                        <th style="width: 3%;"></th>
+                        <th style="width: 3%;">#</th>
+                        <th style="width: 35%;">Товар</th>
+                        <th style="width: 12%;">Категория</th>
+                        <th style="width: 20%;">Количество</th>
+                        <th style="width: 20%;">Цена</th>
+                        <th style="width: 10%;">Действия</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                   
                 </tbody>
             </table>
         </div>
     </div>
 
-
-</main>
 
 <script>
     $(document).ready(function () {
@@ -55,12 +49,14 @@
                 response.data.forEach(function (product) {
                     $('#ordersTable tbody').append(`
                         <tr>
-                            <td style="width: 57%;">${product.name}</td>
+                            <td style="width: 3%;">${product.id}</td>
+                            <td style="width: 35%;">${product.name}</td>
+                            <td style="width: 12%;">${product.category}</td>
                             <td style="width: 20%;">${product.quantity}</td>
-                            <td style="width: 20%;">${product.price}</td>
-                            <td style="width: 3%;">
+                            <td style="width: 20%;">${product.price} тг</td>
+                            <td style="width: 10%;">
                                 <a href="/products/${product.id}/edit/">
-                                    <i class="fa-solid fa-ellipsis-vertical fa-xl" style="color: #000000;"></i>
+                                    <img src="../static/icons/eye-solid.svg" alt="avatar">
                                 </a>
                             </td>
                         </tr>
@@ -75,7 +71,7 @@
 
     updateProductsData();
 
-    setInterval(updateProductsData, 30000);
+    setInterval(updateProductsData, 3000);
 });
 
 

@@ -1,10 +1,46 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Order Details{% endblock %}
 {% block content %}
 
-{% load static %}
+<div class="wrapper-main">
 
-<main>
-    <h1>Sorry, this page doesn't exist yet</h1>
-</main>
+    <div class="page-header">
+        <h2>Информация о заказе</h2>
+    </div>
+
+    <div class="main-back-i">
+            <div class="align">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Детали заказа</h3>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Номер заказа:</strong> {{ order.order_number }}</p>
+                        <p><strong>Заказ:</strong> {{ order.items }}</p>
+                        <p><strong>Стоимость:</strong> {{ order.total_price }}тг</p>
+                        <p><strong>Статус:</strong> {{ order.status }}</p>
+                        <p><strong>Дата:</strong> {{ order.created_at }}</p>
+                    </div>
+                </div>
+        
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Место</h3>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>ID пользователя:</strong> {{ order.userid }}</p>
+                        <p><strong>Сектор:</strong> {{ order.sector }}</p>
+                        <p><strong>Ряд:</strong> {{ order.row }}</p>
+                        <p><strong>Место:</strong> {{ order.seat }}</p>
+                    </div>
+                </div>
+
+            </div>
+    </div>
+</div>
+
 {% endblock %}

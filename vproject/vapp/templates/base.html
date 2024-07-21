@@ -5,147 +5,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <!-- шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a267741843.js" crossorigin="anonymous"></script>
-    <script async src="https://kit.fontawesome.com/a267741843.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
 
     <title>{% block title %}My Website{% endblock %}</title>
 </head>
 <body>
-    <!-- модальное окно выхода -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <h2>Log Out</h2>
-            <p>Are you sure you want to log out?</p>
-            <button id="confirmBtn">Log Out</button>
-            <button id="cancelBtn">Cancel</button>
-        </div>
-    </div>
-
-    <!-- хедер -->
-    <header>
-        <div class="name-exit">
-          <span class="icon-quit" onclick="showConfirmModal()">Log Out<i class="fa-solid fa-arrow-right-from-bracket" style="color: #f44136;"></i></span>
-          <form id="logout-form" method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-          </form>
-        </div>
-    </header>
-
-    <!-- боковой блок -->
-    <nav class="proced-navbar">
+    <nav class="sidebar" id="sidebar">
         <div class="navbar-wrapper">
-
-            <div class="navbar-brand">
-                <span class="navbar-logo">trivi</span>
-            </div>
-
             <div class="navbar-content">
+
+                <div class="pc-user-card">
+                    <div class="card-body">
+                        <div class="align-center">
+                            <div class="avatarka">
+                                <img src="{% static 'icons/Axel-Buet-1.png' %}" alt="avatar" class="wd-40">
+                            </div>
+                            <div class="avatar-name">
+                                <h6>Администратор</h6>
+                            </div>
+                            <a class="bars-image" onclick="infoUser()">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#5b6b79" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+                            </a>
+                        </div>
+
+                        <div class="pc-user-links" id="pc-user-links">
+                            <div class="pt3">
+                                <a href="{% url 'logout' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;" height="14" width="14" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                        <path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/></svg>
+                                    <span>Выйти</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <ul class="inner-navbar">
+                    <li class="navbar-item" onclick="menuToggle('openMenu3')">
+                        <a class="nav-link">
+                            <span class="pc-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 576 512">
+                                <path   d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
+                            </svg>
+                            </span> 
+                            <span>Заказы</span>
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="10" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                            </span>
+                        </a>
 
-                    <li class="navbar-caption">
-                        <label>Navigation</label>
+                        <ul id="openMenu3" style="display: none;">
+                            <li class="navbar-item-el">
+                                <a class="pc-link" href="{% url 'order-list' %}">Список заказов</a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="navbar-item">
-                        <a href="{% url 'order-list' %}" class="nav-link">
-                            <span class="nav-icon"><i class="fa-solid fa-cart-shopping fa-sm"></i></span>
-                            <span class="nav-text">Order</span>
-                            <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
+                    <li class="navbar-item" onclick="menuToggle('openMenu2')">
+                        <a class="nav-link">
+                            <span class="pc-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path  d="M61.1 224C45 224 32 211 32 194.9c0-1.9 .2-3.7 .6-5.6C37.9 168.3 78.8 32 256 32s218.1 136.3 223.4 157.3c.5 1.9 .6 3.7 .6 5.6c0 16.1-13 29.1-29.1 29.1H61.1zM144 128a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm240 16a16 16 0 1 0 0-32 16 16 0 1 0 0 32zM272 96a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zM16 304c0-26.5 21.5-48 48-48H448c26.5 0 48 21.5 48 48s-21.5 48-48 48H64c-26.5 0-48-21.5-48-48zm16 96c0-8.8 7.2-16 16-16H464c8.8 0 16 7.2 16 16v16c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V400z"/></svg></span> 
+                            <span>Меню</span>
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="10" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                            </span>
                         </a>
-                    </li>
-                    
-                    <li class="navbar-item">
-                        <a href="{% url 'product_list' %}" class="nav-link">
-                            <span class="nav-icon"><i class="fa-solid fa-burger fa-sm"></i></span>  
-                            <span class="nav-text">Product</span>
-                            <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
-                        </a>
+
+                         <ul id="openMenu2" style="display: none;">
+                            <li class="navbar-item-el">
+                                <a class="pc-link" href="{% url 'product_list' %}">Товары</a>
+                            </li>
+                            <li class="navbar-item-el">
+                                <a class="pc-link" href="{% url 'product_create' %}">Добавить товар</a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="navbar-item">
-                        <a class="nav-link" onclick="showOpenMenu()">
-                            <span class="nav-icon"><i class="fa-solid fa-gear fa-sm"></i></span>
-                            <span class="nav-text">Settings</span>
-                            <span class="nav-arrow"><i class="fa-solid fa-angle-up fa-rotate-90 fa-2xs"></i></span>
+                    <li class="navbar-item" onclick="menuToggle('openMenu1')">
+                        <a class="nav-link">
+                            <span class="pc-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path  d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg></span> 
+                            <span>Настройки</span>
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="10" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                            </span>
                         </a>
-                        <ul id="openMenu">
+
+                        <ul id="openMenu1" style="display: none;">
                             <li class="navbar-item-el">
-                                <a class="nav-link" href="{% url 'settings' %}">Bot Settings</a>
+                                <a class="pc-link" href="{% url 'settings' %}">Бот</a>
                             </li>
-                            <li class="navbar-item-el">
-                                <a class="nav-link" href="{% url 'message' %}">Rassylka</a>
-                            </li>
-                            <li class="navbar-item-el">
-                                <a class="nav-link" href="{% url 'change_bot_status' %}">Rassylka</a>
-                            </li>
-                           
                         </ul>
                     </li>
 
                 </ul>
-
             </div>
         </div>
-    </nav>
+    </nav>   
+                
+<header class="header" id="header">
+    <div class="header-wrapper">
+        <div class="burger">
+            <ul class="list"> 
+                <li>
+                    <a onclick="showMenu()">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path fill="#5b6b79" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
 
-
+<main id="main">
 {% block content %}
 {% endblock content%}
+</main>
 
     <script>
-        const showConfirmModal = () =>{
-            var modal = document.getElementById("confirmModal");
-            modal.style.display = "block";
-
-            // Обработчик кнопки "Выход"
-            document.getElementById("confirmBtn").onclick = function () {
-                document.getElementById("logout-form").submit();
-            };
-
-            // Обработчик кнопки "Отмена"
-            document.getElementById("cancelBtn").onclick = function () {
-                modal.style.display = "none";
-            };
+        let isOpen = false;
+        function infoUser(){
+           let userLinks = document.getElementById('pc-user-links');
+           isOpen = !isOpen
+           userLinks.style.display = isOpen ? "block" : 'none'
         }
 
-        // Закрытие модального окна при клике вне его
-        window.onclick = function (event) {
-            var modal = document.getElementById("confirmModal");
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
 
-        function showOpenMenu(){
-            const openMenu = document.getElementById('openMenu');
-            if(openMenu.style.display == 'block'){
-                openMenu.style.display = 'none';
-                // Сохраняем состояние меню в localStorage
-                localStorage.setItem('menuState', 'closed');
+        function showMenu(){
+            let menu = document.getElementById('sidebar');
+            let header = document.getElementById('header');
+            let main = document.getElementById('main');
+
+
+            isOpen = !isOpen
+            menu.style.width = isOpen ? "0" : '';
+            header.style.left = isOpen ? "0" : '';
+            main.style.marginLeft = isOpen ? "0" : '';
+
+        }
+       
+        function menuToggle(menuId) {
+            let menu = document.getElementById(menuId);
+            if (menu.style.display === "none" || menu.style.display === "") {
+                menu.style.display = "block";
+                menu.parentNode.classList.add('open'); 
             } else {
-                openMenu.style.display = 'block';
-                // Сохраняем состояние меню в localStorage
-                localStorage.setItem('menuState', 'open');
+                menu.style.display = "none";
+                menu.parentNode.classList.remove('open'); 
             }
         }
 
-        $(document).ready(function() {
-            // Проверяем состояние меню при загрузке страницы
-            const menuState = localStorage.getItem('menuState');
-            if(menuState === 'open'){
-                // Если состояние 'open', отображаем меню
-                $('#openMenu').show();
-            } else {
-                // Если состояние 'closed', скрываем меню
-                $('#openMenu').hide();
-            }
-        });
     </script>   
 
 </body>

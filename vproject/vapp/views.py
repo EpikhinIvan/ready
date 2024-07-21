@@ -8,12 +8,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from .forms import MessageForm, BotStatusForm, ProductForm
 import telebot
+from django.views.decorators.csrf import csrf_exempt
 
 
 
 
-## ЭТО ДЛЯ ОТПРАВКИ СООБЩЕНИЯ ЧЕРЕЗ САЙТ, ЧТОБЫ ЧТОТО КОМУТО ОТПРАВИЛ НУЖНО ЧТОБЫ ЧЕЛ НА СТАРТ НАЖАЛ
-TOKEN = '7171828502:AAHfKBNkG1zTgNtf79YCViNBCOKECvgGqTM'
+TOKEN = '6014766028:AAGQtwWJuFpOFvDeEYGKlzzPgc2gZAMJkfc'
 bot = telebot.TeleBot(TOKEN)
 
 @login_required(login_url='log_in')
@@ -28,13 +28,14 @@ def send_message_to_all(request):
                     bot.send_message(chat.chat_id, message)
                 except Exception as e:
                     print(f"Ошибка при отправке сообщения: {e}")
-            return redirect('message')  # Перенаправление после отправки ПРИДУМАЙ ЧТОНИБУДЬ ЗДЕСЬ, НАВЕРНОЕ ДРУГУЮ ССЫЛКУ НА РЕДИРЕКТ ВСТАВИТЬ НУЖНО БУДЕТ
+            return redirect('settings')
     else:
         form = MessageForm()
 
     return render(request, 'message.html', {'form': form})
 
-##Включить или выключить бота
+
+
 @login_required(login_url='log_in')
 def change_bot_status(request):
     if request.method == "POST":
@@ -42,12 +43,15 @@ def change_bot_status(request):
         if form.is_valid():
             is_active = form.cleaned_data['is_active']
             BotStatus.objects.update_or_create(id=1, defaults={'is_active': is_active})
-            return redirect('change_bot_status')  # Перенаправление на главную страницу или куда вы хотите
+            return redirect('settings')  
     else:
         status, _ = BotStatus.objects.get_or_create(id=1)
         form = BotStatusForm(initial={'is_active': status.is_active})
 
-    return render(request, 'change_bot_status.html', {'form': form})
+    return render(request, 'settings.html', {'form': form})
+
+
+
 
 def log_in(request):
     error_message = None
@@ -61,9 +65,11 @@ def log_in(request):
             login(request, user)
             return redirect('order-list')  
         else:
-            error_message = 'Invalid username or password. Please try again.'
+            error_message = 'Такого пользователя не существует'
 
     return render(request, 'login.html', {'error_message': error_message})
+
+
 
 
 @login_required(login_url='log_in')
@@ -72,21 +78,44 @@ def get_orders_data(request):
     data = []
     for order in orders:
         data.append({
+            'userid' : order.userid,
             'items' : order.items,
-            'created_at': order.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            'created_at': order.created_at.strftime("%m-%d %H:%M"),
             'sector': order.sector,
             'row' : order.row,
             'seat' : order.seat,
-            'total_price': order.total_price
+            'total_price': order.total_price,
+            'order_number': order.order_number,
+            'status': order.status
         })
 
     return JsonResponse({'data': data})
 
 
+@csrf_exempt
+def confirm_payment(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        
+        try:
+            order = Order.objects.get(pk=order_id)  # Получаем заказ по его ID
+            user_id = order.userid  # Получаем ID пользователя из заказа
+            message = f"Оплата за заказ №{order.order_number} подтверждена."
+            
+            # Поскольку user_id это не chat_id, вам нужно будет получить chat_id из модели Chat
+            # Например, предполагаем, что userid это username пользователя в Telegram
+            try:
+                chat = Chat.objects.get(username=user_id)  # Получаем объект чата по username
+                bot.send_message(chat_id=chat.chat_id, text=message)
+                return JsonResponse({'success': True})
+            except Chat.DoesNotExist:
+                return JsonResponse({'error': 'User chat not found'}, status=404)
+                
+        except Order.DoesNotExist:
+            return JsonResponse({'error': 'Order not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
-def orders_view(request):
-    orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'orders.html', {'order-list': orders})
 
 
 @csrf_exempt
@@ -97,36 +126,46 @@ def export_orders_csv(request):
 
     for order in orders:
         data.append({
-            'id': order.id,
+            "id" : order.id,
+            'userid' : order.userid,
+            'items' : order.items,
             'created_at': order.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            'status': order.get_status_display(),
-            'products': ', '.join([item.product.name for item in order.orderitem_set.all()]),
-            'cost': sum([item.price for item in order.orderitem_set.all()]),
-            'courier': order.courier.user.username,
+            'sector': order.sector,
+            'row' : order.row,
+            'seat' : order.seat,
+            'total_price': order.total_price,
+            'order_number': order.order_number,
         })
 
-    # Генерируем CSV и возвращаем его как файл
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="orders.csv"'
 
     writer = csv.writer(response)
-    # Заголовки CSV
-    writer.writerow(['ID', 'Date', 'Status', 'Product', 'Cost', 'Courier'])
+    writer.writerow(['ID', 'UserId', 'Items', 'Date', 'Sector', 'Row', 'Seat' , 'TotalPrice', 'OrderNumber'])
 
-    # Записываем данные в CSV
     for order in data:
-        writer.writerow([order['id'], order['created_at'], order['status'], order['products'], order['cost'], order['courier']])
+        writer.writerow([order['id'], order['userid'], order['items'], order['created_at'], order['sector'], order['row'], order['seat'], order['total_price'], order['order_number']])
 
     return response
+
+
+
 
 def user_list(request):
     users = Chat.objects.all()
     return render(request, 'user_list.html', {'users': users})
 
+
+
+
+
 @login_required(login_url='log_in')
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'product_list.html', {'products': products})
+
+
+
 
 
 @login_required(login_url='log_in')
@@ -145,6 +184,20 @@ def edit_product(request, product_id):
 
 
 
+
+@login_required(login_url='log_in')
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    
+    if request.method == 'POST':
+        product.delete()
+        return redirect('product_list') 
+        
+    return render(request, 'product_edit.html', {'product': product})
+
+
+
+
 @login_required(login_url='log_in')
 def get_products_data(request):
     products = Product.objects.all()
@@ -152,13 +205,15 @@ def get_products_data(request):
     for product in products:
         data.append({
             'id': product.id,
+            'category': product.category,
             'name': product.name,
             'quantity': product.quantity,
             'price': product.price,
-            'initial_quantity': product.initial_quantity
         })
 
     return JsonResponse({'data': data})
+
+
 
 
 @login_required(login_url='log_in')
@@ -167,13 +222,17 @@ def order_list(request):
     return render(request, 'orders.html', {'orders': orders})
 
 
-@login_required(login_url='log_in')
-def order_details(request):
-    pass
+
+
 
 @login_required(login_url='log_in')
-def analytics(request):
-    pass
+def order_details(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number)
+    
+    return render(request, 'order_details.html', {'order': order})
+
+
+
 
 
 
@@ -193,15 +252,31 @@ def product_create(request):
         new_product.save()
 
         return redirect('product_list')  
-
     return render(request, 'product_create.html')
 
 
 
-# вся страница настроек
+
 @login_required(login_url='log_in')
 def settings(request):
-    return render(request, 'settings.html')
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.cleaned_data['message']
+            chats = Chat.objects.all()
+            for chat in chats:
+                try:
+                    bot.send_message(chat.chat_id, message)
+                except Exception as e:
+                    print(f"Ошибка при отправке сообщения: {e}")
+            return redirect('settings')
+    else:
+        form = MessageForm()
+
+    status, _ = BotStatus.objects.get_or_create(id=1)
+    bot_status_form = BotStatusForm(initial={'is_active': status.is_active})
+
+    return render(request, 'settings.html', {'form': form, 'bot_status_form': bot_status_form})
 
 
 
@@ -216,5 +291,5 @@ def set_helper(request):
             helper.telegram_username = telegram_username
             helper.save()
 
-    return HttpResponse("Helper set successfully!")
+    return redirect("settings")
 

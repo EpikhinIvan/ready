@@ -1,69 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Order List{% endblock %}
+{% block title %}Список заказов{% endblock %}
 {% block content %}
 
-<main>
-    <div class="wrapper-main">
-        <div class="maindivfirst"> 
-            <div class="maindivfirstclass">
-                <h1>Order</h1>
-                <div class="dot"></div>
-                <h2>List</h2>
-            </div>
-            
-            <div class="maindivsecondclass">
-                <button class="copycsv" onclick="exportCSV()">
-                    <span class="nav-icon"><i class="fa-regular fa-file fa-xl"></i></span>
-                    <p>EXPORT CSV</p>
-                </button>
-            </div>
-        </div>
-        <div class="main-back">
-            <table id="ordersTable">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;">ID</th>
-                        <th style="width: 25%;">Date</th>
-                        <th style="width: 15%;">Status</th>
-                        <th style="width: 25%;">Product</th>
-                        <th style="width: 10%;">Cost</th>
-                        <th style="width: 12%;">Courier</th>
-                        <th style="width: 3%;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </main>
-    </div>
+<div class="wrapper-main">
     
+    <div class="page-header">
+        <h2>Лист заказов</h2>
+        <div class="copy"> 
+            <button class="copycsv" onclick="exportCSV()">
+                Скачать
+            </button>
+        </div>
+    </div>
+
+    <div class="main-back">
+        <table id="ordersTable" class="table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">ID пользователя</th>
+                    <th style="width: 25%;">Дата</th>
+                    <th style="width: 15%;">Номер заказа</th>
+                    <th style="width: 25%;">Статус</th>
+                    <th style="width: 10%;">Заказ</th>
+                    <th style="width: 12%;">Цена</th>
+                    <th style="width: 3%;">Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
         function updateOrdersData() {
             $.ajax({
                 url: '{% url "get_orders_data" %}',
-                type: 'GET',
+                type: 'GET', 
                 dataType: 'json',
                 success: function (response) {
                     $('#ordersTable tbody').empty();
                     response.data.forEach(function (order) {
                         $('#ordersTable tbody').append(`
+                        
                             <tr>
-                                <td style="width: 10%;">#${order.id}</td>
+                                <a href="/orders/${order.order_number}/edit/">
+                                <td style="width: 10%;">#${order.userid}</td>
                                 <td style="width: 25%;">${order.created_at}</td>
+                                <td style="width: 15%;">${order.order_number}</td>
                                 <td style="width: 15%;">${order.status}</td>
                                 <td style="width: 25%;">${order.items}</td>
                                 <td style="width: 10%;">${order.total_price}</td>
-                                <td style="width: 12%;">${order.courier}</td>
                         
                                 <td style="width: 3%;">
-                                    <a href="{% url 'order_details' %}">
-                                        <i class="fa-solid fa-ellipsis-vertical fa-xl" style="color: #000000;"></i>
+                                    <a href="/orders/${order.order_number}/edit/">
+                                        <img src="../static/icons/eye-solid.svg" alt="avatar">
                                     </a>
                                 </td>
+                                
+                                </a>
                             </tr>
                         `);
                     });
@@ -83,7 +81,6 @@
     function exportCSV() {
         window.location.href = '{% url "export-csv" %}';
     }
-
 </script>
 
 {% endblock %}
